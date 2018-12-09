@@ -1,0 +1,9 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "go_default_library",
+    srcs = ["logger.go"],
+    importpath = "",
+    visibility = ["//visibility:public"],
+    deps = ["//go.uber.org/zap:go_default_library"],
+)

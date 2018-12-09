@@ -1,0 +1,21 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "go_default_library",
+    srcs = [
+        "error.go",
+        "signature.go",
+    ],
+    importpath = "",
+    visibility = ["//visibility:public"],
+    deps = ["//github.com/valyala/fasthttp:go_default_library"],
+)
+
+go_test(
+    name = "go_default_test",
+    srcs = [
+        "error_test.go",
+        "signature_test.go",
+    ],
+    embed = [":go_default_library"],
+)
