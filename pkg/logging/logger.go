@@ -1,8 +1,11 @@
 package logging
 
 import (
-	"github.com/luxordynamics/luxor/bazel-luxor/external/go_sdk/src/strings"
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
+	"io/ioutil"
+	"os"
+	"strings"
 )
 
 type LogLevel string
@@ -23,5 +26,32 @@ func LogLevelFromString(level string) LogLevel {
 
 func NewProductionLogger() *zap.Logger {
 
-	return nil
+	// TODO: use custom logger config
+
+	infoLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
+		return lvl == zapcore.InfoLevel
+	})
+
+	warnLevelAndAbove := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
+		return lvl >= zapcore.WarnLevel
+	})
+
+	jsonInfo := zapcore.AddSync(ioutil.Discard)
+	jsonErrors := zapcore.AddSync(ioutil.Discard)
+
+	consoleInfo := zapcore.Lock(os.Stdout)
+	consoleErrors := zapcore.Lock(os.Stderr)
+
+	jsonEncoder := zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig())
+	consoleEncoder := zapcore.NewConsoleEncoder(zap.NewDevelopmentEncoderConfig())
+
+	core := zapcore.NewTee(
+		zapcore.NewCore(jsonEncoder, jsonErrors, warnLevelAndAbove),
+		zapcore.NewCore(jsonEncoder, jsonInfo, infoLevel),
+
+		zapcore.NewCore(consoleEncoder, consoleErrors, warnLevelAndAbove),
+		zapcore.NewCore(consoleEncoder, consoleInfo, infoLevel),
+	)
+
+	return zap.New(core)
 }

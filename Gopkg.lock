@@ -78,6 +78,7 @@
   input-imports = [
     "github.com/valyala/fasthttp",
     "go.uber.org/zap",
+    "go.uber.org/zap/zapcore",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
