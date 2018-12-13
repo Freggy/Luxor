@@ -5,26 +5,26 @@ import (
 	"go.uber.org/zap/zapcore"
 	"io/ioutil"
 	"os"
-	"strings"
 )
 
-type LogLevel string
+type LogType int
 
 const (
-	Debug      LogLevel = "Debug"
-	Production LogLevel = "Production"
+	Debug LogType = iota
+	Production
 )
 
-func LogLevelFromString(level string) LogLevel {
-	if strings.EqualFold("Debug", level) {
-		return Debug
-	} else if strings.EqualFold("Production", level) {
-		return Production
+func LoggerFromType(t LogType) *zap.Logger {
+	if t == Debug {
+		return nil
+	} else if t == Production {
+		return newProductionLogger()
+	} else {
+		return nil // TODO: return debug logger when invalid log type
 	}
-	return Debug
 }
 
-func NewProductionLogger() *zap.Logger {
+func newProductionLogger() *zap.Logger {
 
 	// TODO: use custom logger config
 
