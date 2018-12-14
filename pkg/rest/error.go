@@ -9,12 +9,12 @@ type Error struct {
 	ErrorType string `json:"type"`
 }
 
-// Creates a new Error type
+// NewError creates a new Error type
 func NewError(code int, message string, errorType string) Error {
 	return Error{code, message, errorType}
 }
 
-// Marshals the struct to JSON by using
+// ToJson marshals the struct to JSON by using
 //  json.Marshal(e)
 func (e Error) ToJson() ([]byte, error) {
 	return json.Marshal(e)
