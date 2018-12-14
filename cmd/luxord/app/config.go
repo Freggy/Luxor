@@ -2,15 +2,15 @@ package app
 
 import (
 	"encoding/json"
-	"github.com/luxordynamics/luxor/pkg/logging"
 	"io/ioutil"
 )
 
 type Config struct {
-	HttpsEnabled bool            `json:"httpsEnabled"`
-	LogLevel     logging.LogType `json:"logType"`
+	HttpsEnabled bool   `json:"httpsEnabled"`
+	LogType      string `json:"logType"`
 }
 
+// FromFile reads the the file at the given path. The content needs to be in JSON format.
 func FromFile(path string) (*Config, error) {
 	content, err := ioutil.ReadFile(path)
 

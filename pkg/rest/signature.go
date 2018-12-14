@@ -19,14 +19,14 @@ type Signature interface {
 
 // Creates a Signature for a response message with the given RequestCtx.
 // The algorithm can be chosen by passing the specific supplier to the method.
-//  sig := luxor.CreateForResponse(NewHmacSignatureForResponse, ctx)
+//  sig := rest.CreateForResponse(NewHmacSignatureForResponse, ctx)
 func CreateForResponse(supplier func(ctx *fasthttp.RequestCtx) Signature, ctx *fasthttp.RequestCtx) Signature {
 	return supplier(ctx)
 }
 
 // Creates a Signature for a request with the given RequestCtx.
 // The algorithm can be chosen by passing the specific supplier to the method.
-//  sig := luxor.CreateFromRequest(NewHmacSignatureFromRequest, ctx)
+//  sig := rest.CreateFromRequest(NewHmacSignatureFromRequest, ctx)
 func CreateFromRequest(supplier func(ctx *fasthttp.RequestCtx) Signature, ctx *fasthttp.RequestCtx) Signature {
 	return supplier(ctx)
 }
@@ -46,7 +46,7 @@ type HmacSignature struct {
 	signature   string
 }
 
-// Creates a type that uses HMAC sha256 for creating a signature
+// NewHmacSignatureForResponse creates a type that uses HMAC sha256 for creating a signature
 // Internally this method uses ctx.Response to retrieve header and body data.
 func NewHmacSignatureForResponse(ctx *fasthttp.RequestCtx) Signature {
 	return &HmacSignature{
@@ -72,12 +72,12 @@ func NewHmacSignatureFromRequest(ctx *fasthttp.RequestCtx) Signature {
 	}
 }
 
-// Concatenates all signature details. This string will later be used for creating the HMAC signature.
+// String concatenates all signature details. This string will later be used for creating the HMAC signature.
 func (info *HmacSignature) String() string {
 	return info.httpVerb + info.endpoint + info.contentType /*+ info.date*/ + string(info.body)
 }
 
-// Creates the HMAC SHA256 signature with the given secret key.
+// Create creates the HMAC SHA256 signature with the given secret key.
 // The result will then encoded to a base64 string.
 func (info *HmacSignature) Create(key string) (string, error) {
 	mac := hmac.New(sha256.New, []byte(key))
@@ -91,7 +91,7 @@ func (info *HmacSignature) Create(key string) (string, error) {
 	return info.signature, nil
 }
 
-// Verifies the given HMAC SHA256 base64 encoded string.
+// Verify verifies the given HMAC SHA256 base64 encoded string.
 // The method will return whether or not the given signature matches.
 func (info *HmacSignature) Verify(signature string) (bool, error) {
 	other, err := base64.StdEncoding.DecodeString(signature)

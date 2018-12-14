@@ -3,7 +3,6 @@ package app
 import (
 	"github.com/luxordynamics/luxor/pkg/logging"
 	"log"
-	"strconv"
 	"testing"
 )
 
@@ -12,7 +11,7 @@ func TestFromString_Success(t *testing.T) {
 	data :=`
 		{ 
 			"httpsEnabled": false, 
-			"logType": 1
+			"logType": "DEBUG"
 		}`
 
 	config, err := fromString(data)
@@ -21,8 +20,8 @@ func TestFromString_Success(t *testing.T) {
 		t.Error(err)
 	}
 
-	if config.LogLevel != logging.Debug {
-		log.Println("LogLevel should be DEBUG(0) but was " + strconv.Itoa(int(config.LogLevel)))
+	if config.LogType != logging.Debug {
+		log.Println("LogLevel should be DEBUG but was " + config.LogType)
 		t.Fail()
 	}
 }

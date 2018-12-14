@@ -5,19 +5,18 @@ import (
 	"go.uber.org/zap/zapcore"
 	"io/ioutil"
 	"os"
+	"strings"
 )
-
-type LogType int
 
 const (
-	Debug LogType = iota
-	Production
+	Debug      = "DEBUG"
+	Production = "PRODUCTION"
 )
 
-func LoggerFromType(t LogType) *zap.Logger {
-	if t == Debug {
+func LoggerFromString(str string) *zap.Logger {
+	if strings.EqualFold(Debug, str) {
 		return nil
-	} else if t == Production {
+	} else if strings.EqualFold(Production, str) {
 		return newProductionLogger()
 	} else {
 		return nil // TODO: return debug logger when invalid log type
