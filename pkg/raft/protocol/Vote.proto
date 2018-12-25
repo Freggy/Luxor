@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+message VoteRequest {
+
+    // Candidates’s term.
+    uint32 term = 1;
+
+    // Candidate requesting vote.
+    string candidateId = 2;
+
+    // Index of candidate's last log entry.
+    uint32 lastLogIndex = 3;
+
+    // Term of candidate's last log entry.
+    uint32 lastLogTerm = 4;
+}
+
+message VoteResponse {
+
+    // Term of candidate.
+    uint32 term = 1;
+
+    // True means that candidate received vote.
+    bool voteGranted = 2;
+
+}
