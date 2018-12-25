@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package raft;
+
+message AppendEntriesRequest {
+    int32 term = 1;
+    int32 prevLogIndex = 2;
+    int32 leaderCommit = 3;
+    string leaderId = 4;
+    repeated Payload entries = 5;
+}
+
+message AppendEntriesResponse {
+    int32 term = 1;
+    bool success = 2;
+}
+
+message Payload {
+    int32 index = 1;
+    bytes payload = 2;
+}
