@@ -24,7 +24,7 @@ func SetTimeoutConfig(max, min int) error {
 // Timeout calls time#Sleep(duration) with a random generated duration
 // in the range [minTimeout, maxTimeout)
 func Timeout() {
-	rand.Seed(time.Now().Unix())
+	rand.Seed(time.Now().Unix()) // TODO: multiply with id to ensure uniqueness
 	t := rand.Intn(maxTimeOut - minTimeOut) + minTimeOut
 	time.Sleep(time.Duration(t) * time.Millisecond)
 }

@@ -4,24 +4,30 @@ package raft;
 
 message VoteRequest {
 
+    // Id of this packet - Always 0x3.
+    uint32 id = 1;
+
     // Candidates’s term.
-    uint32 term = 1;
+    uint32 term = 2;
 
     // Candidate requesting vote.
-    string candidateId = 2;
+    string candidateId = 3;
 
     // Index of candidate's last log entry.
-    uint32 lastLogIndex = 3;
+    uint32 lastLogIndex = 4;
 
     // Term of candidate's last log entry.
-    uint32 lastLogTerm = 4;
+    uint32 lastLogTerm = 5;
 }
 
 message VoteResponse {
 
+    // Id of this packet - Always 0x4.
+    uint32 id = 1;
+
     // Term of candidate.
-    uint32 term = 1;
+    uint32 term = 2;
 
     // True means that candidate received vote.
-    bool voteGranted = 2;
+    bool voteGranted = 3;
 }

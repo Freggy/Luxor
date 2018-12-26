@@ -4,35 +4,40 @@ package raft;
 
 message AppendEntriesRequest {
 
+    // Id of this packet - Always 0x1.
+    uint32 id = 1;
+
     // Leader’s term
-    uint32 term = 1;
+    uint32 term = 2;
 
     // Index of log entry immediately preceding new ones
-    uint32 prevLogIndex = 2;
+    uint32 prevLogIndex = 3;
 
     // Term of prevLogIndex entry
-    uint32 leaderCommit = 3;
+    uint32 leaderCommit = 4;
 
     // Id of the leader
-    string leaderId = 4;
+    string leaderId = 5;
 
     // Log entries to store (empty for heartbeat; may send more than one for efficiency)
-    repeated Payload entries = 5;
+    repeated Entry entries = 6;
 }
 
 message AppendEntriesResponse {
 
+    // Id of this packet - Always 0x2.
+    uint32 id = 1;
+
     // Followers current term.
-    uint32 term = 1;
+    uint32 term = 2;
 
     // Follower that sent this response
-    string followerId = 2;
+    string followerId = 3;
 
     // True if follower contained entry matching prevLogIndex and prevLogTerm
-    bool success = 3;
+    bool success = 4;
 }
 
-message Payload {
-    uint32 index = 1;
+message Entry {
     bytes payload = 2;
 }
