@@ -1,6 +1,6 @@
 package transport
 
-import "github.com/luxordynamics/luxor/pkg/raft/protocol/out"
+import "github.com/luxordynamics/luxor/pkg/raft/protocol/gen"
 
 type Packet interface {
 	GetId() uint32

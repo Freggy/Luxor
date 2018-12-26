@@ -1,5 +1,7 @@
 package raft
 
+import "github.com/satori/go.uuid"
+
 const (
 	Follower State = iota
 	Candidate
@@ -12,11 +14,13 @@ type Node struct {
 	MinTimeout int
 	MaxTimeout int
 	State State
+	Uuid uuid.UUID
 }
 
 // Start starts the raft node
 func (n *Node) Start() error {
-	if err := SetTimeoutConfig(n.MaxTimeout, n.MinTimeout); err != nil {
+	n.Uuid = uuid.NewV4()
+	if err := SetTimeoutConfig(n.MaxTimeout, n.MinTimeout, n.Uuid); err != nil {
 		return err
 	}
 	Timeout()
