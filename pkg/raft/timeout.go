@@ -1,7 +1,7 @@
 package raft
 
 import (
-	"crypto"
+	"crypto/sha256"
 	"encoding/binary"
 	"errors"
 	"github.com/satori/go.uuid"
@@ -12,7 +12,7 @@ import (
 var (
 	minTimeOut int
 	maxTimeOut int
-	idChecksum uint64
+	salt int64
 )
 
 // SetTimeoutConfig sets the minimum timeout and the maximum timeout.
@@ -20,11 +20,10 @@ func SetTimeoutConfig(max, min int, id uuid.UUID) error {
 	if max <= 0 || min <= 0 {
 		return errors.New("values must be at least 1")
 	}
-
-	sha := crypto.SHA256.New()
+	sha := sha256.New()
 	sha.Write(id.Bytes())
 
-	idChecksum = binary.BigEndian.Uint64(sha.Sum(nil))
+	salt = int64(binary.BigEndian.Uint64(sha.Sum(nil)))
 	minTimeOut = min
 	maxTimeOut = max
 	return nil
@@ -32,8 +31,10 @@ func SetTimeoutConfig(max, min int, id uuid.UUID) error {
 
 // Timeout calls time#Sleep(duration) with a random generated duration
 // in the range [minTimeout, maxTimeout)
-func Timeout() {
-	rand.Seed(time.Now().Unix() + int64(idChecksum))
+func Timeout() time.Duration {
+	rand.Seed(time.Now().Unix() + salt)
 	t := rand.Intn(maxTimeOut - minTimeOut) + minTimeOut
-	time.Sleep(time.Duration(t) * time.Millisecond)
+	dur := time.Duration(t) * time.Millisecond
+	time.Sleep(dur)
+	return dur
 }
