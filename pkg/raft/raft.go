@@ -1,21 +1,25 @@
 package raft
 
-import (
-	"math/rand"
-	"time"
+const (
+	Follower State = iota
+	Candidate
+	Leader
 )
 
-type Timeout struct {
-	timeout int
+type State int
+
+type Node struct {
+	MinTimeout int
+	MaxTimeout int
+	State State
 }
 
-func NewTimeout(min, max int) *Timeout {
-	rand.Seed(time.Now().Unix())
-	return &Timeout{
-		timeout: rand.Intn(max - min) + min,
+// Start starts the raft node
+func (n *Node) Start() error {
+	if err := SetTimeoutConfig(n.MaxTimeout, n.MinTimeout); err != nil {
+		return err
 	}
-}
-
-func (t Timeout) DoTimeout()  {
-	time.Sleep(time.Duration(t.timeout) * time.Millisecond)
+	Timeout()
+	// TODO: update state to candidate and ask for votes
+	return nil
 }

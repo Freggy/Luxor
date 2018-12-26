@@ -31,7 +31,6 @@ func init() {
 func GenerateName(s string) string {
 	hash := md5.New()
 	hash.Write([]byte(s))
-	hash.Sum(nil)
 	seed := binary.BigEndian.Uint64(hash.Sum(nil))
 	random := rand.New(rand.NewSource(int64(seed)))
 	noun := nouns[random.Intn(len(nouns))]
@@ -40,6 +39,6 @@ func GenerateName(s string) string {
 }
 
 func marshallAssets(nouns *NounList, adjectives *AdjectiveList) {
-	_ = json.Unmarshal([]byte(Nouns), &nouns)
-	_ = json.Unmarshal([]byte(Adjectives), &adjectives)
+	_ = json.Unmarshal([]byte(Nouns), nouns)
+	_ = json.Unmarshal([]byte(Adjectives), adjectives)
 }
