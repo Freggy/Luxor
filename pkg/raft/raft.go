@@ -23,3 +23,25 @@ func (n *Node) Start() error {
 	// TODO: update state to candidate and ask for votes
 	return nil
 }
+
+func (n *Node) ChangeState(state State) {
+	if state == Follower {
+		n.follow()
+	} else if state == Candidate {
+		n.candidate()
+	} else if state == Leader {
+		n.lead()
+	}
+}
+
+func (n *Node) follow() {
+
+}
+
+func (n *Node) candidate() {
+
+}
+
+func (n *Node) lead() {
+
+}

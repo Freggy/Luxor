@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+package raft;
+
 message VoteRequest {
 
     // Candidates’s term.
@@ -22,5 +24,4 @@ message VoteResponse {
 
     // True means that candidate received vote.
     bool voteGranted = 2;
-
 }
