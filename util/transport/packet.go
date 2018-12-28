@@ -5,6 +5,12 @@ import (
 	"github.com/luxordynamics/luxor/pkg/raft/protocol/gen"
 )
 
+type PacketContainer struct {
+	ReplyTo  string
+	Received int64
+	Packet   *raft.Packet
+}
+
 func NewAppendEntriesRequest(
 	term uint32,
 	prevLogIndex uint32,
