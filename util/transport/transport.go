@@ -10,12 +10,23 @@ import (
 )
 
 type Transport interface {
+
+	// Connect performs all necessary steps to establish stable communication between clients.
 	Connect() error
 
+	// StartConsume starts consuming messages and sends them in the ConsumeChannel.
 	StartConsume() error
 
+	// StartProduce publishes messages put into the ProduceChannel.
 	StartProduce() error
 
+	// GetConsumeChannel gets the ConsumeChannel
+	GetConsumeChannel() chan<- *PacketContainer
+
+	// GetProduceChannel gets the ProduceChannel
+	GetProduceChannel() chan *PacketContainer
+
+	// Close closes the connection and frees all resources.
 	Close() error
 }
 
