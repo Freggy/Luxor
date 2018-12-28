@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package raft;
+
+// Id of this packet 0x3.
+message VoteRequest {
+
+    // Candidates’s term.
+    uint32 term = 2;
+
+    // Candidate requesting vote.
+    string candidateId = 3;
+
+    // Index of candidate's last log entry.
+    uint32 lastLogIndex = 4;
+
+    // Term of candidate's last log entry.
+    uint32 lastLogTerm = 5;
+}
+
+// Id of this packet 0x4.
+message VoteResponse {
+
+    // Term of candidate.
+    uint32 term = 2;
+
+    // True means that candidate received vote.
+    bool voteGranted = 3;
+}
