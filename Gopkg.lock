@@ -38,6 +38,14 @@
   version = "v1.2.0"
 
 [[projects]]
+  branch = "master"
+  digest = "1:525ac3364813b4688df380594e562133e07830dfce0722effda64b37634c13d0"
+  name = "github.com/streadway/amqp"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "a314942b2fd9dde7a3f70ba3f1062848ce6eb392"
+
+[[projects]]
   digest = "1:c468422f334a6b46a19448ad59aaffdfc0a36b08fdcc1c749a0b29b6453d7e59"
   name = "github.com/valyala/bytebufferpool"
   packages = ["."]
@@ -94,6 +102,7 @@
   input-imports = [
     "github.com/golang/protobuf/proto",
     "github.com/satori/go.uuid",
+    "github.com/streadway/amqp",
     "github.com/valyala/fasthttp",
     "go.uber.org/zap",
     "go.uber.org/zap/zapcore",
