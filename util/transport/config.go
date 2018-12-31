@@ -13,6 +13,6 @@ type Config struct {
 	ExtraData map[string]string
 }
 
-func (c Config) String() string {
-	return "amqp://" + c.User + ":" + c.Password + "@" + c.Host + strconv.Itoa(c.Port) + "/"
+func (c Config) AMQPString() string {
+	return "amqp://" + c.User + ":" + c.Password + "@" + c.Host + ":" + strconv.Itoa(c.Port) + "/"
 }

@@ -39,13 +39,21 @@ type AMQPTransport struct {
 	queue   *amqp.Queue
 }
 
+func NewAMQPTransport(config Config) *AMQPTransport {
+	return &AMQPTransport{
+		ConsumeChannel: make(chan<- *PacketContainer),
+		ProduceChannel: make(chan *PacketContainer),
+		config: config,
+	}
+}
+
 func (t *AMQPTransport) Connect() error {
 	if t.config.UseTLS {
 		// TODO: enable TLS
 		return nil
 	}
 
-	conn, err := amqp.Dial(t.config.String())
+	conn, err := amqp.Dial(t.config.AMQPString())
 
 	if err != nil {
 		return err
