@@ -21,7 +21,7 @@ type Transport interface {
 	StartProduce() error
 
 	// GetConsumeChannel gets the ConsumeChannel
-	GetConsumeChannel() chan<- *PacketContainer
+	GetConsumeChannel() chan *PacketContainer
 
 	// GetProduceChannel gets the ProduceChannel
 	GetProduceChannel() chan *PacketContainer
@@ -31,7 +31,7 @@ type Transport interface {
 }
 
 type AMQPTransport struct {
-	ConsumeChannel chan<- *PacketContainer
+	ConsumeChannel chan *PacketContainer
 	ProduceChannel chan *PacketContainer
 
 	config  Config
@@ -41,7 +41,7 @@ type AMQPTransport struct {
 
 func NewAMQPTransport(config Config) *AMQPTransport {
 	return &AMQPTransport{
-		ConsumeChannel: make(chan<- *PacketContainer),
+		ConsumeChannel: make(chan *PacketContainer),
 		ProduceChannel: make(chan *PacketContainer),
 		config: config,
 	}
@@ -74,6 +74,19 @@ func (t *AMQPTransport) Connect() error {
 		nil,
 	)
 
+	err = ch.QueueBind(
+		q.Name,
+		q.Name,
+		"luxor_topic",
+		false,
+		nil,
+
+	)
+
+	if err != nil {
+		return err
+	}
+
 	err = ch.ExchangeDeclare(
 		"luxor_topic",
 		"topic",
@@ -104,20 +117,18 @@ func (t *AMQPTransport) StartConsume() error {
 		return err
 	}
 
-	t.ConsumeChannel = make(chan<- *PacketContainer)
-
 	go func() {
 		for d := range msgs {
-			var data *raft.Packet
+			var data raft.Packet
 
-			if err := proto.Unmarshal(d.Body, data); err != nil {
+			if err := proto.Unmarshal(d.Body, &data); err != nil {
 				log.Println(err)
 				continue
 			}
 
 			t.ConsumeChannel <- &PacketContainer{
 				ReplyTo:  d.ReplyTo,
-				Packet:   data,
+				Packet:   &data,
 				Received: time.Now().UnixNano() / 1000,
 			}
 		}
