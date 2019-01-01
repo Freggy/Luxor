@@ -48,3 +48,7 @@
 [[constraint]]
   name = "github.com/golang/protobuf"
   revision = "1d3f30b51784bec5aad268e59fd3c2fc1c2fe73f"
+
+[[constraint]]
+  name = "github.com/sirupsen/logrus"
+  version = "1.2.0"
