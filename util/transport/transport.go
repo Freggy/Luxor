@@ -4,13 +4,12 @@ import (
 	"github.com/golang/protobuf/proto"
 	"github.com/luxordynamics/luxor/pkg/raft/protocol/gen"
 	"github.com/satori/go.uuid"
+	"github.com/sirupsen/logrus"
 	"github.com/streadway/amqp"
-	"log"
 	"time"
 )
 
 type Transport interface {
-
 	// Connect performs all necessary steps to establish stable communication between clients.
 	Connect() error
 
@@ -34,16 +33,18 @@ type AMQPTransport struct {
 	ConsumeChannel chan *PacketContainer
 	ProduceChannel chan *PacketContainer
 
+	logger  *logrus.Logger
 	config  Config
 	channel *amqp.Channel
 	queue   *amqp.Queue
 }
 
-func NewAMQPTransport(config Config) *AMQPTransport {
+func NewAMQPTransport(config Config, logger *logrus.Logger) *AMQPTransport {
 	return &AMQPTransport{
 		ConsumeChannel: make(chan *PacketContainer),
 		ProduceChannel: make(chan *PacketContainer),
-		config: config,
+		config:         config,
+		logger:         logger,
 	}
 }
 
@@ -122,7 +123,7 @@ func (t *AMQPTransport) StartConsume() error {
 			var data raft.Packet
 
 			if err := proto.Unmarshal(d.Body, &data); err != nil {
-				log.Println(err)
+				t.logger.Error(err)
 				continue
 			}
 
@@ -144,7 +145,7 @@ func (t *AMQPTransport) StartProduce() error {
 			data, err := proto.Marshal(pc.Packet)
 
 			if err != nil {
-				log.Println(err)
+				t.logger.Error(err)
 				continue
 			}
 
@@ -160,7 +161,7 @@ func (t *AMQPTransport) StartProduce() error {
 				})
 
 			if err != nil {
-				log.Println(err)
+				t.logger.Error(err)
 				continue
 			}
 		}

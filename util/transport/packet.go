@@ -20,7 +20,7 @@ type PacketContainer struct {
 // NewAppendEntriesRequest creates a new AppendEntriesRequest (0x1) packet.
 //
 // term         - Leader’s term
-// prevLogIndex - Index of log entry immediately preceding new ones
+// prevLogIndex - Index of logger entry immediately preceding new ones
 // leaderCommit - Term of prevLogIndex entry
 // leaderId     - Id of the leader
 // entries      - Log entries to store (empty for heartbeat; may send more than one for efficiency)
@@ -60,8 +60,8 @@ func NewAppendEntriesResponse(
 //
 // term         - Candidates’s term.
 // lastLogIndex - Candidate requesting vote.
-// lastLogTerm  - Index of candidate's last log entry.
-// candidateId  - Term of candidate's last log entry.
+// lastLogTerm  - Index of candidate's last logger entry.
+// candidateId  - Term of candidate's last logger entry.
 func NewVoteRequest(
 	term uint32,
 	lastLogIndex uint32,
