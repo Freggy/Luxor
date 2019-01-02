@@ -2,12 +2,13 @@ package app
 
 import (
 	"encoding/json"
+	"github.com/sirupsen/logrus"
 	"io/ioutil"
 )
 
 type Config struct {
-	HttpsEnabled bool   `json:"httpsEnabled"`
-	LogType      string `json:"logType"`
+	HttpsEnabled bool `json:"httpsEnabled"`
+	logger       *logrus.Logger
 }
 
 // FromFile reads the the file at the given path. The content needs to be in JSON format.
