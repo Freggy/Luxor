@@ -9,14 +9,23 @@ type Config struct {
 }
 
 
+func NewLoggerFromType(logType string, config *Config) *logrus.Logger {
+	if logType == "DEBUG" {
+		return NewDebugLogger()
+	} else if logType == "PRODUCTION" {
+		return NewProductionLogger(config)
+	} else {
+		return NewDebugLogger()
+	}
+}
 
-func newDebugLogger(config Config) *logrus.Logger {
+func NewDebugLogger() *logrus.Logger {
 	logger := logrus.New()
 	logger.SetLevel(logrus.DebugLevel)
 	return logger
 }
 
-func newProductionLogger(config Config) *logrus.Logger {
+func NewProductionLogger(config *Config) *logrus.Logger {
 	logger := logrus.New()
 	logger.SetLevel(logrus.InfoLevel)
 	// TODO: implement the following options:

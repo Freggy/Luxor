@@ -3,6 +3,8 @@ package main
 import (
 	"encoding/json"
 	"github.com/luxordynamics/luxor/cmd/luxord/app"
+	"github.com/luxordynamics/luxor/pkg/logging"
+	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"log"
 	"os"
@@ -10,6 +12,8 @@ import (
 
 func main() {
 	var config *app.Config
+	var logger *logrus.Logger
+
 	if _, err := os.Stat(app.ConfigLocation); os.IsNotExist(err) {
 		config = app.NewDefaultConfig()
 
@@ -29,4 +33,6 @@ func main() {
 			log.Fatal(err)
 		}
 	}
+
+	logger = logging.NewLoggerFromType(config.LoggerConf.LogType, config.LoggerConf)
 }
