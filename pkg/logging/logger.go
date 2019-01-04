@@ -8,13 +8,15 @@ type Config struct {
 	PushToLogstash bool   `json:"pushToLogStash"`
 }
 
-func newDebugLogger() *logrus.Logger {
+
+
+func newDebugLogger(config Config) *logrus.Logger {
 	logger := logrus.New()
 	logger.SetLevel(logrus.DebugLevel)
 	return logger
 }
 
-func newProductionLogger() *logrus.Logger {
+func newProductionLogger(config Config) *logrus.Logger {
 	logger := logrus.New()
 	logger.SetLevel(logrus.InfoLevel)
 	// TODO: implement the following options:

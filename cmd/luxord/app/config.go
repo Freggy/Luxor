@@ -2,17 +2,24 @@ package app
 
 import (
 	"encoding/json"
-	"github.com/sirupsen/logrus"
+	"github.com/luxordynamics/luxor/pkg/logging"
 	"io/ioutil"
 )
 
+const ConfigLocation = "/etc/luxor/luxor.json"
+
 type Config struct {
-	HttpsEnabled bool `json:"httpsEnabled"`
-	logger       *logrus.Logger
+	HttpsEnabled bool           `json:"httpsEnabled"`
+	LoggerConf   logging.Config `json:"loggerConfiguration"`
 }
 
-// FromFile reads the the file at the given path. The content needs to be in JSON format.
-func FromFile(path string) (*Config, error) {
+
+func NewDefaultConfig() *Config {
+	return nil
+}
+
+// ConfigFromFile reads the the file at the given path. The content needs to be in JSON format.
+func ConfigFromFile(path string) (*Config, error) {
 	content, err := ioutil.ReadFile(path)
 
 	if err != nil {
