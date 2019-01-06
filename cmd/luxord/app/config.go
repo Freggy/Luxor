@@ -13,6 +13,7 @@ type Config struct {
 	LoggerConf   *logging.Config `json:"loggerConfiguration"`
 }
 
+// NewDefaultConfig returns the default configuration for Luxor.
 func NewDefaultConfig() *Config {
 	return &Config{
 		HttpsEnabled: false,
@@ -41,6 +42,7 @@ func ConfigFromFile(path string) (*Config, error) {
 	return conf, nil
 }
 
+// fromString unmarshalls the given input string.
 func fromString(content string) (*Config, error) {
 	conf := Config{}
 
