@@ -1,4 +1,4 @@
-package transport
+package raft
 
 import (
 	"github.com/golang/protobuf/proto"

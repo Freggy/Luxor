@@ -11,6 +11,7 @@ const ConfigLocation = "/etc/luxor/luxor.json"
 type Config struct {
 	HttpsEnabled bool            `json:"httpsEnabled"`
 	LoggerConf   *logging.Config `json:"loggerConfiguration"`
+	Peers        []string
 }
 
 // NewDefaultConfig returns the default configuration for Luxor.
