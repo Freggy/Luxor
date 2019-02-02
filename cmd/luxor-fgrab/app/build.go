@@ -14,7 +14,7 @@ type FileModel struct {
 }
 
 func BuildModel(service *Service) ([]FileModel, error) {
-	m, err := build(service.Files)
+	m, err := buildDef(service.Files)
 
 	if err != nil {
 		return nil, err
@@ -22,11 +22,10 @@ func BuildModel(service *Service) ([]FileModel, error) {
 	return m, nil
 }
 
-func build(defs []FileDef) ([]FileModel, error) {
+func buildDef(defs []FileDef) ([]FileModel, error) {
 	models := make([]FileModel, 0)
 
 	for _, def := range defs {
-
 		result, err := os.Stat(def.Path)
 
 		if err != nil {
@@ -34,7 +33,6 @@ func build(defs []FileDef) ([]FileModel, error) {
 		}
 
 		if result.IsDir() {
-
 			if def.Files == nil {
 				err := filepath.Walk(def.Path, func(path string, info os.FileInfo, err error) error {
 					if path != def.Path {
@@ -51,7 +49,7 @@ func build(defs []FileDef) ([]FileModel, error) {
 				}
 			}
 
-			other, err := build(def.Files)
+			other, err := buildDef(def.Files)
 
 			if err != nil {
 				return nil, err
