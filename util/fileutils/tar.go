@@ -26,7 +26,7 @@ func TarGzip(src string) error {
 	return Tar(src, gzipw)
 }
 
-// UntarGzip untars a
+// UntarGzip untars a gzip compressed tar archive to the given destination.
 func UntarGzip(dest string, archive string) error {
 	f, err :=  os.Open(archive)
 
@@ -88,9 +88,50 @@ func Tar(srcDir string, w io.Writer) error {
 }
 
 
-// Untar untars
+// Untar untars files using the specified reader to the given destination.
 func Untar(dest string, r io.Reader) error {
  	tarr := tar.NewReader(r)
+
+	for {
+		header, err := tarr.Next()
+
+		switch {
+
+		// EOF means no more files are found so return
+		case err == io.EOF:
+			return nil
+
+		case err != nil:
+			return err
+
+		case header == nil:
+			continue
+		}
+
+		target := filepath.Join(dest, header.Name)
+
+		switch header.Typeflag {
+		case tar.TypeDir:
+			if _, err := os.Stat(target); err != nil {
+				if err := os.MkdirAll(target, 0755); err != nil {
+					return err
+				}
+			}
+		case tar.TypeReg: // TypeReg -> file
+			f, err := os.OpenFile(target, os.O_CREATE|os.O_RDWR, os.FileMode(header.Mode))
+
+			if err != nil {
+				return err
+			}
+
+			if _, err := io.Copy(f, tarr); err != nil {
+				return err
+			}
+
+			f.Close()
+		}
+	}
+
 
 }
 

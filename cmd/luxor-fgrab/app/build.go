@@ -19,6 +19,7 @@ func BuildModel(service *Service) ([]FileModel, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	return m, nil
 }
 
