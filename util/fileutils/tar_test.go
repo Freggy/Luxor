@@ -11,12 +11,13 @@ var (
 	srcDir = "/tmp/tar_test"
 	tarFile   = "/tmp/created.tar"
 	dest   = "/tmp/created"
+
+	testString1 = "This is a test #1"
+	testString2 = "This is a test #2"
 )
 
 
 func Test_Tar_uncompressed(t *testing.T) {
-
-	// TODO: only execute this flag when integration test flag is set
 
 	if err := createDirAndFiles(); err != nil {
 		t.Errorf("Failed to create test environment: %v", err.Error())
@@ -38,11 +39,12 @@ func Test_Tar_uncompressed(t *testing.T) {
 
 	toWrite, err := os.Create(tarFile)
 
+	defer toWrite.Close()
+
 	if err != nil {
 		t.Errorf("%v", err.Error())
 	}
 
-	defer toWrite.Close()
 
 	_, err = toWrite.Write(buf.Bytes())
 
@@ -64,10 +66,31 @@ func Test_Tar_uncompressed(t *testing.T) {
 		t.Errorf("Failed to untar file: %v", err.Error())
 	}
 
-	//
-	// Check untared directory structure
-	//
+	validate(t)
+}
 
+func Test_Tar_gzip_compressed(t *testing.T) {
+
+	// TODO: only execute this flag when integration test flag is set
+
+	if err := createDirAndFiles(); err != nil {
+		t.Errorf("Failed to create test environment: %v", err.Error())
+	}
+
+	defer cleanup(t)
+
+	if err := TarGzip(srcDir, tarFile); err != nil {
+		t.Errorf("Failed to tar directory: %v", err.Error())
+	}
+
+	if err := UntarGzip(dest, tarFile); err != nil {
+		t.Errorf("Failed to untar directory: %v", err.Error())
+	}
+
+	validate(t)
+}
+
+func validate(t *testing.T) {
 	sub, err := os.Stat(dest + "/subdir")
 
 	if err != nil {
@@ -78,14 +101,15 @@ func Test_Tar_uncompressed(t *testing.T) {
 		t.Error("'sub' should be directory but wasn't")
 	}
 
-	if !checkFileContents(dest + "/testfile1.txt", "This is a test #1") {
+	if !checkFileContents(dest + "/testfile1.txt", testString1) {
 		t.Error("File 'testfile1.txt' could not be found or has invalid content.")
 	}
 
-	if !checkFileContents(dest + "/subdir/testfile2.txt", "This is a test #2") {
+	if !checkFileContents(dest + "/subdir/testfile2.txt", testString2) {
 		t.Error("File 'testfile1.txt' could not be found or has invalid content.")
 	}
 }
+
 
 func checkFileContents(path string, expected string) bool {
 	_, err := os.Stat(path)
@@ -113,7 +137,7 @@ func createDirAndFiles() error {
 		return err
 	}
 
-	if err := ioutil.WriteFile("/tmp/tar_test/testfile1.txt", []byte("This is a test #1"), 0775); err != nil {
+	if err := ioutil.WriteFile("/tmp/tar_test/testfile1.txt", []byte(testString1), 0775); err != nil {
 		return err
 	}
 
@@ -122,7 +146,7 @@ func createDirAndFiles() error {
 	}
 
 
-	if err := ioutil.WriteFile("/tmp/tar_test/subdir/testfile2.txt", []byte("This is a test #2"), 0775); err != nil {
+	if err := ioutil.WriteFile("/tmp/tar_test/subdir/testfile2.txt", []byte(testString2), 0775); err != nil {
 		return err
 	}
 

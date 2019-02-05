@@ -2,7 +2,6 @@ package fileutils
 
 import (
 	"archive/tar"
-	"bytes"
 	"compress/gzip"
 	"fmt"
 	"io"
@@ -12,17 +11,23 @@ import (
 )
 
 // TarGzip tars a given directory with gzip compression.
-func TarGzip(src string) error {
+func TarGzip(src string, dest string) error {
 	if _, err := os.Stat(src); err != nil {
 		return fmt.Errorf("could not tar files %v", err.Error())
 	}
 
-	buf := new(bytes.Buffer)
+	f, err := os.Create(dest)
 
-	gzipw := gzip.NewWriter(buf)
+	defer f.Close()
+
+	if err != nil {
+		return err
+	}
+
+
+	gzipw := gzip.NewWriter(f)
 
 	defer gzipw.Close()
-
 
 	return Tar(src, gzipw)
 }
@@ -133,8 +138,6 @@ func Untar(dest string, r io.Reader) error {
 			f.Close()
 		}
 	}
-
-
 }
 
 
