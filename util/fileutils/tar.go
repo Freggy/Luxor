@@ -8,6 +8,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 // TarGzip tars a given directory with gzip compression.
@@ -46,7 +47,6 @@ func UntarGzip(dest string, archive string) error {
 
 // Tar tars all files in a given source directory together using the specified writer.
 func Tar(srcDir string, w io.Writer) error {
-
 	tarw := tar.NewWriter(w)
 
 	defer tarw.Close()
@@ -62,6 +62,8 @@ func Tar(srcDir string, w io.Writer) error {
 		if err != nil {
 			return err
 		}
+
+		header.Name = strings.TrimPrefix(strings.Replace(file, srcDir, "", -1), string(filepath.Separator))
 
 		if err := tarw.WriteHeader(header); err != nil {
 			return err
