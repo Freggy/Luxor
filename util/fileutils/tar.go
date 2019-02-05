@@ -11,6 +11,8 @@ import (
 )
 
 // TarGzip tars a given directory with gzip compression.
+// Note that this method only tars files contained in the given directory.
+// It does not tar single files.
 func TarGzip(src string, dest string) error {
 	if _, err := os.Stat(src); err != nil {
 		return fmt.Errorf("could not tar files %v", err.Error())
